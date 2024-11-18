@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/dtu-course-connector/static/css/main.e6c13ad2.css",
+    "main.js": "/dtu-course-connector/static/js/main.26fb0a50.js",
+    "static/js/453.fb5761ed.chunk.js": "/dtu-course-connector/static/js/453.fb5761ed.chunk.js",
+    "index.html": "/dtu-course-connector/index.html",
+    "main.e6c13ad2.css.map": "/dtu-course-connector/static/css/main.e6c13ad2.css.map",
+    "main.26fb0a50.js.map": "/dtu-course-connector/static/js/main.26fb0a50.js.map",
+    "453.fb5761ed.chunk.js.map": "/dtu-course-connector/static/js/453.fb5761ed.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.e6c13ad2.css",
+    "static/js/main.26fb0a50.js"
+  ]
+}
