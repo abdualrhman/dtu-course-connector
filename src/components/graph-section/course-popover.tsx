@@ -2,12 +2,13 @@ import React from "react";
 import { CourseDetail } from "../../types";
 
 interface CoursePopoverContentProps {
-  courseDetail: CourseDetail;
+  courseDetail: CourseDetail | null;
 }
 
 const CoursePopoverContent: React.FC<CoursePopoverContentProps> = ({
   courseDetail,
 }) => {
+  if (!courseDetail) return <div>Course no longer available</div>;
   return (
     <div>
       <a

@@ -2,6 +2,7 @@ import { useState } from "react";
 import type { Graph } from "./types";
 import GraphComponent from "./components/graph-section/graph-section";
 import { makeCourseGraph } from "./utils/make-course-graph";
+import "bootstrap/dist/css/bootstrap.min.css";
 
 export default function App() {
   const [courseNumber, setCourseNumber] = useState("01257");

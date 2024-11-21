@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import cytoscape from "cytoscape";
 import setupCy from "../../utils/setupCy";
-import { Popover } from "react-bootstrap";
 import CoursePopoverContent from "./course-popover";
 import { CourseDetail, Graph } from "../../types";
 import { getCourseByCode } from "../../utils/get-course-by-code";
+import { useFloating, autoPlacement, offset } from "@floating-ui/react-dom";
 
 export default function GraphComponent({ graph }: { graph: Graph }) {
   setupCy();
@@ -16,7 +16,10 @@ export default function GraphComponent({ graph }: { graph: Graph }) {
   const [popoverContent, setPopoverContent] = useState<JSX.Element | null>(
     null
   );
-  const [popoverPosition, setPopoverPosition] = useState({ top: 0, left: 0 });
+  const { refs, floatingStyles, update } = useFloating({
+    placement: "top",
+    middleware: [offset(10), autoPlacement()],
+  });
 
   useEffect(() => {
     if (graphRef.current) {
@@ -106,10 +109,13 @@ export default function GraphComponent({ graph }: { graph: Graph }) {
 
     if (courseCode.length < 7) {
       const courseDetail = await fetchCourseDetail(courseCode);
-      if (courseDetail) {
-        setPopoverContent(<CoursePopoverContent courseDetail={courseDetail} />);
-        setPopoverPosition(getPopoverPosition(event));
-        setShowPopover(true);
+      setPopoverContent(<CoursePopoverContent courseDetail={courseDetail} />);
+      setShowPopover(true);
+
+      const targetElement = event.originalEvent.target as HTMLElement | null;
+      if (targetElement) {
+        refs.setReference(targetElement);
+        update();
       }
     }
   };
@@ -125,24 +131,6 @@ export default function GraphComponent({ graph }: { graph: Graph }) {
       console.error("Error fetching course data:", error);
       return null;
     }
-  };
-
-  const getPopoverPosition = (
-    event: cytoscape.EventObject
-  ): { top: number; left: number } => {
-    const { clientX, clientY } = event.originalEvent as MouseEvent;
-    const containerRect = graphRef.current?.getBoundingClientRect() || {
-      top: 0,
-      left: 0,
-    };
-
-    const zoom = cyRef.current?.zoom() || 1;
-    const pan = cyRef.current?.pan() || { x: 0, y: 0 };
-
-    return {
-      top: (clientY - containerRect.top - pan.y) / zoom + window.scrollY,
-      left: (clientX - containerRect.left - pan.x) / zoom + window.scrollX,
-    };
   };
 
   return (
@@ -161,20 +149,21 @@ export default function GraphComponent({ graph }: { graph: Graph }) {
       ></div>
 
       {showPopover && (
-        <Popover
-          id="node-popover"
+        <div
+          ref={(node) => {
+            refs.floating.current = node;
+          }}
           style={{
-            position: "absolute",
-            top: popoverPosition.top,
-            left: popoverPosition.left,
-            zIndex: 1000,
-            maxWidth: "250px",
+            ...floatingStyles,
+            backgroundColor: "#fff",
             borderRadius: "8px",
             boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
+            padding: "1rem",
+            zIndex: 1000,
           }}
         >
-          <Popover.Body>{popoverContent}</Popover.Body>
-        </Popover>
+          {popoverContent}
+        </div>
       )}
     </div>
   );
